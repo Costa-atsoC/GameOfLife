@@ -3,12 +3,16 @@ package main
 import(
 	"fmt"
 	"math/rand/v2"
-	// "time"
+	// "os"
+	"flag"
+	"time"
 )
 
+var line = 1
+var column = 1
+var steps = 1
+
 const (
-	line  = 5
-	column = 5
 	sleep  = 100
 	alive  = "🟩"
 	dead   = "🟥"
@@ -78,16 +82,32 @@ func Rules(w World, x, y int) bool{
 }
 
 func main(){
+	// Flags
+	widthFlag := flag.Int("w", 5, "a int")
+	heighFlag := flag.Int("h", 5, "an int")
+	stepFlag := flag.Int("s", 1, "an int")
+
+	flag.Parse()
+
+	line = *widthFlag
+	column = *heighFlag
+	steps = *stepFlag
+
 	world := GenerateWorld()
 	Seed(world)
 	PrintWorld(world)
-	newWorld := GenerateWorld()
-	for indexRow, row := range world {
-		for indexCol, _ := range row {
-			// fmt.Println(indexRow, indexCol)
-			newWorld[indexRow][indexCol] = Rules(world, indexRow, indexCol)
+
+	for i := 0; i< steps; i++ {
+		newWorld := GenerateWorld()
+		for indexRow, row := range world {
+			for indexCol, _ := range row {
+				// fmt.Println(indexRow, indexCol)
+				newWorld[indexRow][indexCol] = Rules(world, indexRow, indexCol)
+			}
 		}
+		
+		fmt.Println()
+		PrintWorld(newWorld)
+		world = newWorld
 	}
-	fmt.Println()
-	PrintWorld(newWorld)
 }
